@@ -4,7 +4,7 @@ const Stats = ({ stats }) => {
   return (
     <div className="bg-white/90 rounded-lg p-6 mt-6">
       <h3 className="text-xl font-bold mb-4 text-center">Your Stats</h3>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <StatItem 
           label="Games Played" 
           value={stats.gamesPlayed} 
@@ -19,11 +19,6 @@ const Stats = ({ stats }) => {
           label="Win Rate" 
           value={`${stats.winRate || 0}%`} 
           icon="📈" 
-        />
-        <StatItem 
-          label="Best Luck" 
-          value={`${stats.bestLuck}%`} 
-          icon="⭐" 
         />
       </div>
       {stats.gamesPlayed > 0 && (
