@@ -191,20 +191,10 @@ const LuckTester = ({ onGameComplete, onReset }) => {
   };
 
   const handleReset = () => {
-    console.log('Reset button clicked');  // Debug log
+    console.log('Reset button clicked');
 
-    // First clear localStorage
-    localStorage.clear();
-    console.log('localStorage cleared');
-
-    // Call parent reset handler before state updates
-    if (onReset) {
-      onReset();
-      console.log('Parent reset called');
-    }
-
-    // Reset all states
-    const resetState = {
+    // First clear all states
+    setTestStatus({
       completed: false,
       lastCompletedDate: null,
       gamesPlayed: {
@@ -214,21 +204,23 @@ const LuckTester = ({ onGameComplete, onReset }) => {
       },
       wins: 0,
       totalGames: 0
-    };
-
-    // Update all states synchronously
-    setTestStatus(resetState);
+    });
     setDailyLuckScore(null);
     setIsMinimized(false);
     setActiveGame(null);
     setShowResetConfirm(false);
-    console.log('States reset');
 
-    // Force a hard refresh after a brief delay to ensure states are updated
-    setTimeout(() => {
-      console.log('Refreshing page...');
-      window.location = window.location.href.split('#')[0];
-    }, 100);
+    // Call parent reset handler
+    if (onReset) {
+      onReset();
+    }
+
+    // Clear localStorage after state updates
+    localStorage.removeItem('dailyTestStatus');
+    localStorage.removeItem('gameStats');
+
+    // Force a page refresh without using location
+    document.location.reload();
   };
 
   if (testStatus.completed) {
@@ -437,8 +429,14 @@ const LuckTester = ({ onGameComplete, onReset }) => {
       </div>
 
       {showResetConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-sm mx-4">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={() => setShowResetConfirm(false)}
+        >
+          <div 
+            className="bg-white rounded-lg p-6 max-w-sm mx-4"
+            onClick={e => e.stopPropagation()}
+          >
             <h3 className="text-lg font-bold mb-4">Reset Daily Test?</h3>
             <p className="text-gray-600 mb-4">
               This will reset all progress for testing purposes. Are you sure?
@@ -451,9 +449,8 @@ const LuckTester = ({ onGameComplete, onReset }) => {
                 Cancel
               </button>
               <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  console.log('Confirm reset clicked'); // Debug log
+                onClick={() => {
+                  console.log('Confirm reset clicked');
                   handleReset();
                 }}
                 className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer"
