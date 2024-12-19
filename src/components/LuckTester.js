@@ -193,34 +193,40 @@ const LuckTester = ({ onGameComplete, onReset }) => {
   const handleReset = () => {
     console.log('Reset button clicked');
 
-    // First clear all states
-    setTestStatus({
-      completed: false,
-      lastCompletedDate: null,
-      gamesPlayed: {
-        coinFlip: 0,
-        diceRoll: 0,
-        cardDraw: 0
-      },
-      wins: 0,
-      totalGames: 0
-    });
-    setDailyLuckScore(null);
-    setIsMinimized(false);
-    setActiveGame(null);
-    setShowResetConfirm(false);
+    try {
+      // Clear all browser storage
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Call parent reset handler first
+      if (onReset) {
+        onReset();
+      }
 
-    // Call parent reset handler
-    if (onReset) {
-      onReset();
+      // Reset all states
+      setTestStatus({
+        completed: false,
+        lastCompletedDate: null,
+        gamesPlayed: {
+          coinFlip: 0,
+          diceRoll: 0,
+          cardDraw: 0
+        },
+        wins: 0,
+        totalGames: 0
+      });
+      setDailyLuckScore(null);
+      setIsMinimized(false);
+      setActiveGame(null);
+      setShowResetConfirm(false);
+
+      // Force a hard refresh bypassing cache
+      window.location.href = window.location.href.split('?')[0] + '?t=' + Date.now();
+    } catch (error) {
+      console.error('Reset failed:', error);
+      // If all else fails, do a hard reload
+      window.location.reload(true);
     }
-
-    // Clear localStorage after state updates
-    localStorage.removeItem('dailyTestStatus');
-    localStorage.removeItem('gameStats');
-
-    // Force a page refresh without using location
-    document.location.reload();
   };
 
   if (testStatus.completed) {
