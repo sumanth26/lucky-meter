@@ -69,7 +69,7 @@ function App() {
         <ThemeSelector />
 
         <h1 className="text-4xl font-bold text-white text-center mb-8 animate-bounce-slow">
-          Fortune Flux
+          Test Your Luck AI
         </h1>
 
         <Streak 
