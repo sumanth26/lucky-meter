@@ -44,6 +44,25 @@ function App() {
     });
   };
 
+  const handleReset = () => {
+    console.log('App reset started');
+    
+    // Clear all storage first
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Reset stats synchronously
+    setStats({
+      gamesPlayed: 0,
+      totalWins: 0,
+      winRate: 0,
+      currentStreak: 0,
+      bestStreak: 0
+    });
+    
+    console.log('App reset completed');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary to-secondary p-4">
       <div className="max-w-4xl mx-auto">
@@ -60,6 +79,7 @@ function App() {
 
         <LuckTester 
           onGameComplete={handleGameComplete}
+          onReset={handleReset}
         />
 
         <div className="mt-8">
