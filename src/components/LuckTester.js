@@ -81,15 +81,20 @@ const LuckTester = ({ onGameComplete, onReset }) => {
   }, [testStatus]);
 
   const calculateDailyLuck = () => {
+    // If no games played yet, return 0
+    if (testStatus.totalGames === 0) {
+      return 0;
+    }
+
     // Calculate win rate based on total games played so far
     const winRate = (testStatus.wins / testStatus.totalGames) * 100;
     
-    // Check if all games have been played at least once
-    const allGamesPlayed = Object.values(testStatus.gamesPlayed).every(count => count > 0);
-    
-    // Return 0 if not all games have been tried yet
-    if (!allGamesPlayed) {
-      return 0;
+    // If test is completed, check if all games were played
+    if (testStatus.totalGames === 5) {
+      const allGamesPlayed = Object.values(testStatus.gamesPlayed).every(count => count > 0);
+      if (!allGamesPlayed) {
+        return 0; // Return 0 only if test is complete but not all games were played
+      }
     }
 
     return Math.round(winRate);
